@@ -2,7 +2,50 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Летищна система</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Летищна система</h1>
+    </header>
+    <main>
+        <section class="search">
+            <h2>Търсене на полет</h2>
+            <input type="text" placeholder="Въведете номер на полет">
+            <button>Търси</button>
+        </section>
+        <section class="flights">
+            <h2>Текущи полети</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Номер на полет</th>
+                        <th>Дестинация</th>
+                        <th>Час на заминаване</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>BG123</td>
+                        <td>Лондон</td>
+                        <td>14:30</td>
+                        <td>Излита</td>
+                    </tr>
+                    <tr>
+                        <td>BG456</td>
+                        <td>Париж</td>
+                        <td>15:00</td>
+                        <td>Закъснение</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>
