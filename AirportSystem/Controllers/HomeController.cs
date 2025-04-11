@@ -1,32 +1,51 @@
-using System.Diagnostics;
+using AirportSystem.Models.Data;
 using AirportSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
-namespace AirportSystem.Controllers
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _context;
+
+    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
     {
-        private readonly ILogger<HomeController> _logger;
+        _logger = logger;
+        _context = context;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index(string searchTerm)
+    {
+        var flights = _context.Flights
+            .Include(f => f.ArrivalAirport)
+            .Include(f => f.DepartureAirport)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
         {
-            _logger = logger;
+            searchTerm = searchTerm.ToLower();
+
+            flights = flights.Where(f =>
+                f.FlightNumber.ToLower().Contains(searchTerm) ||
+                f.Airline.ToLower().Contains(searchTerm) ||
+                f.DepartureAirport.Name.ToLower().Contains(searchTerm) ||
+                f.ArrivalAirport.Name.ToLower().Contains(searchTerm) ||
+                f.DepartureTime.ToString().ToLower().Contains(searchTerm) ||
+                f.ArrivalTime.ToString().ToLower().Contains(searchTerm)
+            );
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        return View(await flights.ToListAsync());
+    }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

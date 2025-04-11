@@ -1,51 +1,56 @@
-﻿@{
+﻿@model IEnumerable<AirportSystem.Models.Flight>
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<html lang="bg">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Летищна система</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>
-        <h1>Летищна система</h1>
-    </header>
-    <main>
-        <section class="search">
-            <h2>Търсене на полет</h2>
-            <input type="text" placeholder="Въведете номер на полет">
-            <button>Търси</button>
-        </section>
-        <section class="flights">
-            <h2>Текущи полети</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Номер на полет</th>
-                        <th>Дестинация</th>
-                        <th>Час на заминаване</th>
-                        <th>Статус</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>BG123</td>
-                        <td>Лондон</td>
-                        <td>14:30</td>
-                        <td>Излита</td>
-                    </tr>
-                    <tr>
-                        <td>BG456</td>
-                        <td>Париж</td>
-                        <td>15:00</td>
-                        <td>Закъснение</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-    </main>
-</body>
-</html>
+<div class="container mt-4">
+    <h2 class="mb-4">Търсене на полет</h2>
+
+    <form asp-action="Index" method="get" class="row g-3 mb-4">
+        <div class="col-md-6">
+            <input type="text" name="searchTerm" class="form-control" placeholder="Въведете номер на полет" />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Търси</button>
+        </div>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var flight in Model)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card shadow h-100 border-0 rounded-4">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div class="mb-3">
+                                <h5 class="card-title mb-1 text-primary">@flight.FlightNumber</h5>
+                                <p class="card-subtitle text-muted">@flight.Airline</p>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>От:</strong> @flight.DepartureAirport?.Name<br />
+                                    <small class="text-muted">@flight.DepartureTime.ToString("dd.MM.yyyy HH:mm")</small>
+                                </div>
+
+                                <div class="text-primary fs-4 fw-bold">→</div>
+
+                                <div>
+                                    <strong>До:</strong> @flight.ArrivalAirport?.Name<br />
+                                    <small class="text-muted">@flight.ArrivalTime.ToString("dd.MM.yyyy HH:mm")</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">Няма намерени полети.</p>
+    }
+
+
+</div>

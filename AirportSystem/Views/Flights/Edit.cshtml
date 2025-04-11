@@ -1,53 +1,60 @@
 ﻿@model AirportSystem.Models.Flight
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редакция на полет";
 }
 
-<h1>Edit</h1>
+<h2 class="mb-4"><i class="fa-solid fa-pen-to-square me-2"></i>Редакция на полет</h2>
 
-<h4>Flight</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="card shadow border-0 rounded-4 form-card">
+    <div class="card-body">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="FlightNumber" class="control-label"></label>
-                <input asp-for="FlightNumber" class="form-control" />
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="FlightNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="FlightNumber" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Airline" class="form-label fw-semibold"></label>
+                    <input asp-for="Airline" class="form-control" />
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Airline" class="control-label"></label>
-                <input asp-for="Airline" class="form-control" />
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="DepartureTime" class="form-label fw-semibold"></label>
+                    <input asp-for="DepartureTime" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ArrivalTime" class="form-label fw-semibold"></label>
+                    <input asp-for="ArrivalTime" class="form-control" />
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DepartureTime" class="control-label"></label>
-                <input asp-for="DepartureTime" class="form-control" />
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label asp-for="DepartureAirportId" class="form-label fw-semibold"></label>
+                    <select asp-for="DepartureAirportId" class="form-select" asp-items="ViewBag.DepartureAirportId"></select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ArrivalAirportId" class="form-label fw-semibold"></label>
+                    <select asp-for="ArrivalAirportId" class="form-select" asp-items="ViewBag.ArrivalAirportId"></select>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="ArrivalTime" class="control-label"></label>
-                <input asp-for="ArrivalTime" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="DepartureAirportId" class="control-label"></label>
-                <select asp-for="DepartureAirportId" class="form-control" asp-items="ViewBag.DepartureAirportId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="ArrivalAirportId" class="control-label"></label>
-                <select asp-for="ArrivalAirportId" class="form-control" asp-items="ViewBag.ArrivalAirportId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+
+            <button type="submit" class="btn btn-primary me-2">
+                <i class="fa-solid fa-save me-1"></i>Запази
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">Назад</a>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

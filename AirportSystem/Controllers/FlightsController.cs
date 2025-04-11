@@ -70,14 +70,21 @@ namespace AirportSystem.Controllers
             ModelState.Remove("ArrivalAirport");
             ModelState.Remove("DepartureAirport");
 
-            if (flight.DepartureTime >= flight.ArrivalTime)
+            if (flight.DepartureTime != default && flight.ArrivalTime != default)
             {
-                ModelState.AddModelError("", "Arrival time must be after departure time.");
+                if (flight.ArrivalTime <= flight.DepartureTime)
+                {
+                    ModelState.AddModelError(nameof(flight.ArrivalTime), "Arrival time must be after departure time.");
+                }
+                else if ((flight.ArrivalTime - flight.DepartureTime).TotalHours > 24)
+                {
+                    ModelState.AddModelError(nameof(flight.ArrivalTime), $"Flight duration cannot exceed 24 hours. Current: {(flight.ArrivalTime - flight.DepartureTime).TotalHours:F1}h");
+                }
             }
 
             if (flight.DepartureAirportId == flight.ArrivalAirportId)
             {
-                ModelState.AddModelError("", "Departure and Arrival airports must be different.");
+                ModelState.AddModelError(nameof(flight.ArrivalAirportId), "Departure and Arrival airports must be different.");
             }
 
             if (ModelState.IsValid)
@@ -131,14 +138,21 @@ namespace AirportSystem.Controllers
                 return NotFound();
             }
 
-            if (flight.DepartureTime >= flight.ArrivalTime)
+            if (flight.DepartureTime != default && flight.ArrivalTime != default)
             {
-                ModelState.AddModelError("", "Arrival time must be after departure time.");
+                if (flight.ArrivalTime <= flight.DepartureTime)
+                {
+                    ModelState.AddModelError(nameof(flight.ArrivalTime), "Arrival time must be after departure time.");
+                }
+                else if ((flight.ArrivalTime - flight.DepartureTime).TotalHours > 24)
+                {
+                    ModelState.AddModelError(nameof(flight.ArrivalTime), $"Flight duration cannot exceed 24 hours. Current: {(flight.ArrivalTime - flight.DepartureTime).TotalHours:F1}h");
+                }
             }
 
             if (flight.DepartureAirportId == flight.ArrivalAirportId)
             {
-                ModelState.AddModelError("", "Departure and Arrival airports must be different.");
+                ModelState.AddModelError(nameof(flight.ArrivalAirportId), "Departure and Arrival airports must be different.");
             }
 
             if (ModelState.IsValid)
@@ -151,14 +165,11 @@ namespace AirportSystem.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!FlightExists(flight.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -208,5 +219,44 @@ namespace AirportSystem.Controllers
         {
             return _context.Flights.Any(e => e.Id == id);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> FlipAirports(int id)
+        {
+            var flight = await _context.Flights.FindAsync(id);
+            if (flight == null)
+            {
+                return Json(new { success = false, error = "Flight not found." });
+            }
+
+            // Swap airports
+            var tempAirport = flight.DepartureAirportId;
+            flight.DepartureAirportId = flight.ArrivalAirportId;
+            flight.ArrivalAirportId = tempAirport;
+
+            // Swap times
+            var tempTime = flight.DepartureTime;
+            flight.DepartureTime = flight.ArrivalTime;
+            flight.ArrivalTime = tempTime;
+
+            await _context.SaveChangesAsync();
+
+            // Връщаме нови данни
+            var depName = _context.Airports.Find(flight.DepartureAirportId)?.Name ?? "";
+            var arrName = _context.Airports.Find(flight.ArrivalAirportId)?.Name ?? "";
+            var depTimeStr = flight.DepartureTime.ToString("dd.MM.yyyy HH:mm");
+            var arrTimeStr = flight.ArrivalTime.ToString("dd.MM.yyyy HH:mm");
+
+            return Json(new
+            {
+                success = true,
+                departureAirportName = depName,
+                arrivalAirportName = arrName,
+                departureTime = depTimeStr,
+                arrivalTime = arrTimeStr
+            });
+        }
+
+
     }
 }

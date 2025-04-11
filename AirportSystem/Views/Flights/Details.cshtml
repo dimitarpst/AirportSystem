@@ -1,54 +1,44 @@
 ﻿@model AirportSystem.Models.Flight
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Детайли за полет";
 }
 
-<h1>Details</h1>
+<h2 class="mb-4"><i class="fa-solid fa-circle-info me-2"></i>Детайли за полет</h2>
 
-<div>
-    <h4>Flight</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FlightNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FlightNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Airline)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Airline)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DepartureTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DepartureTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ArrivalTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ArrivalTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DepartureAirport)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DepartureAirport.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ArrivalAirport)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ArrivalAirport.Name)
-        </dd>
-    </dl>
+<div class="card shadow border-0 rounded-4 form-card">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 fw-semibold">Номер на полет</dt>
+            <dd class="col-sm-8">@Model.FlightNumber</dd>
+
+            <dt class="col-sm-4 fw-semibold">Авиолиния</dt>
+            <dd class="col-sm-8">@Model.Airline</dd>
+
+            <dt class="col-sm-4 fw-semibold">Заминаване</dt>
+            <dd class="col-sm-8">
+                @Model.DepartureAirport?.Name
+                (<span class="text-muted">@Model.DepartureTime.ToString("dd.MM.yyyy HH:mm")</span>)
+            </dd>
+
+            <dt class="col-sm-4 fw-semibold">Пристигане</dt>
+            <dd class="col-sm-8">
+                @Model.ArrivalAirport?.Name
+                (<span class="text-muted">@Model.ArrivalTime.ToString("dd.MM.yyyy HH:mm")</span>)
+            </dd>
+        </dl>
+
+        <div class="mt-4">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                <i class="fa-solid fa-pen-to-square me-1"></i>Редактирай
+            </a>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Назад</a>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
