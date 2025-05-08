@@ -1,6 +1,63 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Политика за поверителност";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<section class="text-center mb-5">
+    <h1 class="display-4 fw-bold text-primary mb-4">
+        <i class="bi bi-shield-lock"></i> @ViewData["Title"]
+    </h1>
+    <p class="lead text-muted">Вашата поверителност е важна за нас. Ето как събираме, използваме и защитаваме вашата информация.</p>
+</section>
+
+<div class="container px-lg-5">
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow-lg rounded-4 p-4 mb-4">
+                <h4 class="fw-bold text-primary mb-3">
+                    <i class="bi bi-shield-lock me-2"></i> Нашият ангажимент към поверителността
+                </h4>
+                <p class="text-muted">В [Вашия сайт] сме посветени на защитата на вашата поверителност. Нашата политика за поверителност описва как боравим с вашите лични данни.</p>
+            </div>
+
+            <div class="card shadow-lg rounded-4 p-4 mb-4">
+                <h5 class="fw-bold text-info mb-3">
+                    <i class="bi bi-person-lock me-2"></i> Каква информация събираме?
+                </h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Лична информация, която предоставяте при регистрация</li>
+                    <li class="list-group-item">Информация, събирана чрез "бисквитки" и други технологии за проследяване</li>
+                    <li class="list-group-item">Данни, свързани с вашите взаимодействия с нашите услуги</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-lg rounded-4 p-4 mb-4">
+                <h5 class="fw-bold text-info mb-3">
+                    <i class="bi bi-shield-check me-2"></i> Как използваме вашата информация?
+                </h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">За персонализиране на вашето преживяване</li>
+                    <li class="list-group-item">За да комуникираме с вас относно важни актуализации</li>
+                    <li class="list-group-item">За защита срещу измами и злоупотреби</li>
+                </ul>
+            </div>
+
+            <div class="card shadow-lg rounded-4 p-4 mb-4">
+                <h5 class="fw-bold text-info mb-3">
+                    <i class="bi bi-people-check me-2"></i> Как защитаваме вашата информация
+                </h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Използваме индустриални стандарти за криптиране</li>
+                    <li class="list-group-item">Редовни проверки на сигурността</li>
+                    <li class="list-group-item">Контроли за достъп, предотвратяващи неоторизиран достъп</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="/home" class="btn btn-outline-primary rounded-pill shadow-sm px-4">Назад към началото</a>
+    </div>
+</div>
+

@@ -162,3 +162,55 @@
 .flight-info .airport {
     max-width: 100%;
 }
+
+.text-flight-header {
+    color: #003566;
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 1px;
+}
+
+.btn-airport {
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    color: white;
+    border-radius: 30px;
+    padding: 10px 30px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+    .btn-airport:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+.airport-background {
+    background-image: url('https://i.imgur.com/l9q2k4L.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    padding: 50px 0;
+}
+
+.airport-board {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 15px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 5px solid #007bff;
+}
+
+    .airport-board:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+.airport-board-header h5 {
+    font-size: 1.2rem;
+}
+
+.airport-divider {
+    border-top: 1px dashed #ccc;
+    margin: 12px 0;
+}
+
+

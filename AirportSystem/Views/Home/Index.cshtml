@@ -3,31 +3,43 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Търсене на полет</h2>
+<section class="text-center mb-5">
+    <h1 class="display-4 fw-bold text-primary mb-4">
+        <i class="bi bi-airplane-engines"></i> Търсене на полет
+    </h1>
+    <p class="lead text-muted mb-4">Намерете полети по номер или дестинация с лесен и бърз интерфейс</p>
+</section>
 
-    <form asp-action="Index" method="get" class="row g-3 mb-4">
-        <div class="col-md-6">
-            <input type="text" name="searchTerm" class="form-control" placeholder="Въведете номер на полет" />
+<div class="container px-lg-5">
+    <!-- Search and Filter Form -->
+    <form asp-action="Index" method="get" class="row g-4 mb-5">
+        <div class="col-md-8">
+            <input type="text" name="searchTerm" class="form-control form-control-lg rounded-5 shadow-lg" placeholder="Въведете номер на полет или дестинация" />
         </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Търси</button>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary btn-lg shadow-lg rounded-5 w-100">
+                <i class="bi bi-search"></i> Търси
+            </button>
         </div>
+       
     </form>
 
+    <!-- Flight Results -->
     @if (Model != null && Model.Any())
     {
         <div class="row g-4">
             @foreach (var flight in Model)
             {
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card shadow h-100 border-0 rounded-4">
+                    <div class="card shadow-lg rounded-4 h-100 border-0 transform-hover">
                         <div class="card-body d-flex flex-column justify-content-between">
+                            <!-- Flight Details -->
                             <div class="mb-3">
                                 <h5 class="card-title mb-1 text-primary">@flight.FlightNumber</h5>
                                 <p class="card-subtitle text-muted">@flight.Airline</p>
                             </div>
 
+                            <!-- Flight Routes -->
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>От:</strong> @flight.DepartureAirport?.Name<br />
@@ -49,8 +61,55 @@
     }
     else
     {
-        <p class="text-muted">Няма намерени полети.</p>
+        <p class="text-muted text-center">Няма намерени полети.</p>
+    }
+</div>
+
+<style>
+    /* Hover effect on cards */
+    .transform-hover:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
     }
 
+    /* Gradient background for cards */
+    .card {
+        background: linear-gradient(145deg, #f9f9f9, #e2e6ea);
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+    }
 
-</div>
+    /* Customized button colors */
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .btn-outline-secondary {
+        border-color: #ced4da;
+        color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+            border-color: #6c757d;
+        }
+
+    /* Input field styling */
+    .form-control {
+        background-color: #f8f9fa;
+        border-color: #ced4da;
+        font-size: 16px;
+        border-radius: 50px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+   
+
+    }
+</style>
