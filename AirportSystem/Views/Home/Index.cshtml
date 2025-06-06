@@ -1,115 +1,431 @@
 ﻿@model IEnumerable<AirportSystem.Models.Flight>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Operations Dashboard";
+    var upcomingDepartures = Model?.OrderBy(f => f.DepartureTime).Take(5) ?? new List<AirportSystem.Models.Flight>();
+    var recentArrivals = Model?.OrderByDescending(f => f.ArrivalTime).Take(5) ?? new List<AirportSystem.Models.Flight>();
 }
 
-<section class="text-center mb-5">
-    <h1 class="display-4 fw-bold text-primary mb-4">
-        <i class="bi bi-airplane-engines"></i> Търсене на полет
-    </h1>
-    <p class="lead text-muted mb-4">Намерете полети по номер или дестинация с лесен и бърз интерфейс</p>
-</section>
-
-<div class="container px-lg-5">
-    <!-- Search and Filter Form -->
-    <form asp-action="Index" method="get" class="row g-4 mb-5">
-        <div class="col-md-8">
-            <input type="text" name="searchTerm" class="form-control form-control-lg rounded-5 shadow-lg" placeholder="Въведете номер на полет или дестинация" />
-        </div>
-        <div class="col-md-3">
-            <button type="submit" class="btn btn-primary btn-lg shadow-lg rounded-5 w-100">
-                <i class="bi bi-search"></i> Търси
-            </button>
-        </div>
-       
-    </form>
-
-    <!-- Flight Results -->
-    @if (Model != null && Model.Any())
-    {
-        <div class="row g-4">
-            @foreach (var flight in Model)
-            {
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card shadow-lg rounded-4 h-100 border-0 transform-hover">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <!-- Flight Details -->
-                            <div class="mb-3">
-                                <h5 class="card-title mb-1 text-primary">@flight.FlightNumber</h5>
-                                <p class="card-subtitle text-muted">@flight.Airline</p>
-                            </div>
-
-                            <!-- Flight Routes -->
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>От:</strong> @flight.DepartureAirport?.Name<br />
-                                    <small class="text-muted">@flight.DepartureTime.ToString("dd.MM.yyyy HH:mm")</small>
-                                </div>
-
-                                <div class="text-primary fs-4 fw-bold">→</div>
-
-                                <div>
-                                    <strong>До:</strong> @flight.ArrivalAirport?.Name<br />
-                                    <small class="text-muted">@flight.ArrivalTime.ToString("dd.MM.yyyy HH:mm")</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <p class="text-muted text-center">Няма намерени полети.</p>
-    }
-</div>
-
 <style>
-    /* Hover effect on cards */
-    .transform-hover:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s ease;
+    /* General Dashboard Enhancements */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-gap: 2rem;
     }
 
-    /* Gradient background for cards */
-    .card {
+    .grid-col-span-12 {
+        grid-column: span 12;
+    }
+
+    .grid-col-span-8 {
+        grid-column: span 8;
+    }
+
+    .grid-col-span-6 {
+        grid-column: span 6;
+    }
+
+    .grid-col-span-4 {
+        grid-column: span 4;
+    }
+
+    @@media (max-width: 992px) {
+        .grid-col-span-lg-4
+
+    {
+        grid-column: span 6;
+    }
+
+    .grid-col-span-lg-6 {
+        grid-column: span 12;
+    }
+
+    }
+    @@media (max-width: 768px) {
+        .grid-col-span-md-12
+
+    {
+        grid-column: span 12;
+    }
+
+    .grid-col-span-lg-4 {
+        grid-column: span 12;
+    }
+
+    }
+
+    /* Feature: Vintage Flip Clock */
+    .flip-clock-container {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0;
+    }
+
+    .flip-clock-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .flip-clock-section {
+        position: relative;
+        width: 60px;
+        height: 90px;
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 90px;
+        text-align: center;
+        background: #343a40;
+        color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        margin: 0 5px;
+    }
+
+    .flip-clock-divider {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #343a40;
+        line-height: 90px;
+    }
+
+    /* Feature: Stat Cards */
+    .stat-card {
         background: linear-gradient(145deg, #f9f9f9, #e2e6ea);
-        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
         border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Customized button colors */
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-        border: none;
-    }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12);
         }
 
-    .btn-outline-secondary {
-        border-color: #ced4da;
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #007bff;
+    }
+
+    .stat-label {
+        font-size: 1rem;
         color: #6c757d;
     }
 
-        .btn-outline-secondary:hover {
-            background-color: #f8f9fa;
-            border-color: #6c757d;
+    /* Feature: Flight Boards */
+    .flight-board {
+        background: #212529;
+        color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .flight-board-header {
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #00c6ff;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #00c6ff;
+    }
+
+    .flight-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px dashed #495057;
+    }
+
+        .flight-row:last-child {
+            border-bottom: none;
         }
 
-    /* Input field styling */
-    .form-control {
-        background-color: #f8f9fa;
-        border-color: #ced4da;
-        font-size: 16px;
-        border-radius: 50px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        .flight-row .time {
+            font-weight: 700;
+            color: #ffc107;
+        }
+
+        .flight-row .destination {
+            font-weight: 500;
+        }
+
+        .flight-row .flight-num {
+            color: #adb5bd;
+        }
+
+    /* Feature: Featured Destination Card */
+    .featured-destination-card {
+        position: relative;
+        color: white;
+        min-height: 250px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 15px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1.5rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, background-image 1s ease-in-out;
     }
 
-   
+        .featured-destination-card:hover {
+            transform: translateY(-5px);
+        }
 
+        .featured-destination-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0) 50%);
+        }
+
+        .featured-destination-card .content {
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .featured-destination-card.is-loaded .content {
+            opacity: 1;
+        }
+
+    /* Feature: Weather Widget */
+    .weather-widget {
+        text-align: center;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+        color: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+        .weather-widget .weather-icon i {
+            font-size: 4rem;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .weather-widget .temperature {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .weather-widget .condition {
+            font-size: 1.25rem;
+            text-transform: capitalize;
+        }
+
+    /* Quick Actions */
+    .quick-action-btn {
+        font-size: 1.1rem;
+        font-weight: 600;
+        padding: 1rem;
+        border-radius: 10px;
     }
 </style>
+
+<section class="text-center mb-5">
+    <h1 class="display-4 fw-bold">Operations Dashboard</h1>
+    <p class="lead text-muted">Welcome! Here's a live overview of your airport system.</p>
+    <div class="flip-clock-container">
+        <div class="flip-clock-group"><div class="flip-clock-section" id="clock-hours">00</div></div>
+        <div class="flip-clock-divider">:</div>
+        <div class="flip-clock-group"><div class="flip-clock-section" id="clock-minutes">00</div></div>
+        <div class="flip-clock-divider">:</div>
+        <div class="flip-clock-group"><div class="flip-clock-section" id="clock-seconds">00</div></div>
+    </div>
+</section>
+
+<div class="dashboard-grid">
+    <div class="stat-card grid-col-span-4 grid-col-span-lg-4 grid-col-span-md-12">
+        <div id="total-flights-stat" class="stat-number">0</div>
+        <div class="stat-label">Total Flights</div>
+    </div>
+    <div class="stat-card grid-col-span-4 grid-col-span-lg-4 grid-col-span-md-12">
+        <div id="total-airports-stat" class="stat-number">0</div>
+        <div class="stat-label">Total Airports</div>
+    </div>
+    <div class="stat-card grid-col-span-4 grid-col-span-lg-4 grid-col-span-md-12">
+        <div id="active-airlines-stat" class="stat-number">0</div>
+        <div class="stat-label">Active Airlines</div>
+    </div>
+
+    <div class="flight-board grid-col-span-6 grid-col-span-lg-6 grid-col-span-md-12">
+        <h4 class="flight-board-header text-center"><i class="fa-solid fa-plane-departure me-2"></i>Departures</h4>
+        @foreach (var flight in upcomingDepartures)
+        {
+            <div class="flight-row">
+                <span class="time">@flight.DepartureTime.ToString("HH:mm")</span>
+                <span class="destination">@flight.ArrivalAirport.Name</span>
+                <span class="flight-num">@flight.FlightNumber</span>
+            </div>
+        }
+    </div>
+    <div class="flight-board grid-col-span-6 grid-col-span-lg-6 grid-col-span-md-12">
+        <h4 class="flight-board-header text-center"><i class="fa-solid fa-plane-arrival me-2"></i>Arrivals</h4>
+        @foreach (var flight in recentArrivals)
+        {
+            <div class="flight-row">
+                <span class="time">@flight.ArrivalTime.ToString("HH:mm")</span>
+                <span class="destination">@flight.DepartureAirport.Name</span>
+                <span class="flight-num">@flight.FlightNumber</span>
+            </div>
+        }
+    </div>
+
+    <div class="featured-destination-card grid-col-span-8 grid-col-span-lg-6 grid-col-span-md-12" id="featured-destination">
+        <div class="content">
+            <h3 class="fw-bold" id="featured-airport-name">Finding a destination...</h3>
+            <p class="lead" id="featured-airport-location"></p>
+        </div>
+    </div>
+    <div class="weather-widget grid-col-span-4 grid-col-span-lg-6 grid-col-span-md-12">
+        <div class="weather-icon" id="weather-icon"><i class="fa-solid fa-spinner fa-spin"></i></div>
+        <div class="temperature" id="weather-temp">--°C</div>
+        <div class="condition" id="weather-condition">Loading...</div>
+        <div class="location small mt-2">Burgas, Bulgaria</div>
+    </div>
+
+    <div class="grid-col-span-12 text-center mt-4">
+        <h2 class="fw-bold mb-4">Quick Actions</h2>
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+            <a href="@Url.Action("Create", "Flights")" class="btn btn-primary btn-lg quick-action-btn shadow"><i class="fa-solid fa-plus-circle me-2"></i>Add New Flight</a>
+            <a href="@Url.Action("Index", "Airports")" class="btn btn-outline-secondary btn-lg quick-action-btn shadow-sm"><i class="fa-solid fa-building me-2"></i>Manage Airports</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            //I PUT IT HERE CUZ I DON'T WANNA DO REQUESTS FOR NO REASON TVVr8udidMVDZoxWIc5pozmkkAlsRP6zJnv5KM2q9Y0
+            const YOUR_UNSPLASH_ACCESS_KEY = 'TVVr8udidMVDZoxWIc5pozmkkAlsRP6zJnv5KM2q9Y0';
+
+            const hEl = document.getElementById('clock-hours'), mEl = document.getElementById('clock-minutes'), sEl = document.getElementById('clock-seconds');
+            const updateClock = () => {
+                const now = new Date();
+                hEl.textContent = String(now.getHours()).padStart(2, '0');
+                mEl.textContent = String(now.getMinutes()).padStart(2, '0');
+                sEl.textContent = String(now.getSeconds()).padStart(2, '0');
+            };
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            const allFlights = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+            const allAirports = [];
+            const airportNames = new Set();
+            allFlights.forEach(flight => {
+                if (flight.DepartureAirport && !airportNames.has(flight.DepartureAirport.Name)) {
+                    airportNames.add(flight.DepartureAirport.Name);
+                    allAirports.push(flight.DepartureAirport);
+                }
+                if (flight.ArrivalAirport && !airportNames.has(flight.ArrivalAirport.Name)) {
+                    airportNames.add(flight.ArrivalAirport.Name);
+                    allAirports.push(flight.ArrivalAirport);
+                }
+            });
+            const allAirlines = new Set(allFlights.map(f => f.Airline));
+
+            const animateValue = (obj, start, end, duration) => {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const p = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerHTML = Math.floor(p * (end - start) + start);
+                    if (p < 1) window.requestAnimationFrame(step);
+                };
+                window.requestAnimationFrame(step);
+            };
+            animateValue(document.getElementById("total-flights-stat"), 0, allFlights.length, 1500);
+            animateValue(document.getElementById("total-airports-stat"), 0, allAirports.length, 1500);
+            animateValue(document.getElementById("active-airlines-stat"), 0, allAirlines.size, 1500);
+
+            async function fetchImageUrlForAirport(airport) {
+                const fallbackImageUrl = `https://source.unsplash.com/800x600/?travel,sky`;
+                if (!YOUR_UNSPLASH_ACCESS_KEY || YOUR_UNSPLASH_ACCESS_KEY === 'TVVr8udidMVDZoxWIc5pozmkkAlsRP6zJnv5KM2q9Y0') {
+                    console.error("Unsplash Access Key is missing!");
+                    return fallbackImageUrl;
+                }
+
+                const query = encodeURIComponent(`${airport.Location} airport`);
+                const url = `https://api.unsplash.com/search/photos?query=${query}&per_page=1&orientation=landscape`;
+
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            'Authorization': `Client-ID ${YOUR_UNSPLASH_ACCESS_KEY}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        console.error(`Unsplash API error: ${response.statusText}`);
+                        return fallbackImageUrl;
+                    }
+
+                    const data = await response.json();
+                    if (data.results && data.results.length > 0) {
+                        return data.results[0].urls.regular;
+                    } else {
+                        console.warn(`No results from Unsplash for '${airport.Location}'. Using fallback.`);
+                        return fallbackImageUrl;
+                    }
+                } catch (error) {
+                    console.error("Error fetching from Unsplash:", error);
+                    return fallbackImageUrl;
+                }
+            }
+
+            const destCard = document.getElementById('featured-destination');
+            const destName = document.getElementById('featured-airport-name');
+            const destLocation = document.getElementById('featured-airport-location');
+
+            async function updateDestinationCard() {
+                if (!allAirports || allAirports.length === 0) return;
+
+                destCard.classList.remove('is-loaded');
+                destName.textContent = "Finding next destination...";
+                destLocation.textContent = "";
+
+                const randomAirport = allAirports[Math.floor(Math.random() * allAirports.length)];
+
+                const imageUrl = await fetchImageUrlForAirport(randomAirport);
+
+                const img = new Image();
+                img.src = imageUrl;
+                img.onload = () => {
+                    destCard.style.backgroundImage = `url('${imageUrl}')`;
+                    destName.textContent = randomAirport.Name;
+                    destLocation.textContent = randomAirport.Location;
+                    destCard.classList.add('is-loaded');
+                };
+            };
+
+            if (destCard) {
+                updateDestinationCard();
+                setInterval(updateDestinationCard, 8000);
+            }
+
+            const weather = { temp: 22, condition: "Sunny" };
+            const weatherIconMap = {
+                "Sunny": "fa-solid fa-sun", "Clear": "fa-solid fa-moon",
+                "Clouds": "fa-solid fa-cloud", "Rain": "fa-solid fa-cloud-showers-heavy",
+                "Snow": "fa-solid fa-snowflake", "Mist": "fa-solid fa-smog",
+                "Default": "fa-solid fa-temperature-half"
+            };
+            const iconClass = weatherIconMap[weather.condition] || weatherIconMap["Default"];
+            document.getElementById('weather-icon').innerHTML = `<i class="${iconClass}"></i>`;
+            document.getElementById('weather-temp').textContent = `${weather.temp}°C`;
+            document.getElementById('weather-condition').textContent = weather.condition;
+        });
+    </script>
+}
