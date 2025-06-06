@@ -178,10 +178,6 @@
     transition: 0.3s ease;
 }
 
-    .btn-airport:hover {
-        background-color: #0056b3;
-        transform: scale(1.05);
-    }
 
 .airport-background {
     background-image: url('https://i.imgur.com/l9q2k4L.jpg');
@@ -213,4 +209,86 @@
     margin: 12px 0;
 }
 
+.card-container {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
 
+.dimmed-out {
+    opacity: 0.2;
+    transform: scale(0.98);
+}
+
+.no-results-message {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.25rem;
+    color: #6c757d;
+}
+
+
+.btn-roulette {
+    background: linear-gradient(45deg, #0d6efd, #00c6ff);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4); 
+    transition: all 0.3s ease;
+}
+
+    .btn-roulette:hover, .btn-roulette:focus {
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(0, 123, 255, 0.55);
+    }
+
+    .btn-roulette:disabled {
+        background: #6c757d;
+        box-shadow: none;
+        transform: none;
+        cursor: not-allowed;
+    }
+
+.roulette-active .card-container {
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+}
+
+.card-container.roulette-spin-highlight > .card,
+.card-container.roulette-spin-highlight > .airport-board {
+    opacity: 1 !important;
+    transform: scale(1.03);
+    transition: transform 0.1s ease;
+}
+
+.roulette-winner {
+    opacity: 1 !important;
+    transform: none !important; 
+}
+
+.card-container.roulette-winner > .card,
+.card-container.roulette-winner > .airport-board {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.7) !important;
+    animation: pulsing-glow 1.5s infinite ease-in-out;
+    z-index: 10;
+}
+
+@keyframes pulsing-glow {
+    0% {
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.7)!important;
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(0, 198, 255, 0.9) !important;
+    }
+
+    100% {
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.7) !important;
+    }
+}
